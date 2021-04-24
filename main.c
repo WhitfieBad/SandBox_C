@@ -2,16 +2,16 @@
 #include "List.h"
 
 int main() {
-    Node* list = CreateNode(1);
+    Node* list = NULL;
+    CreateNode(1, &list);
     AddTermBegin(&list, 2);
     AddTermBegin(&list, 3);
     AddTermBegin(&list, 6);
     AddTermBegin(&list, 5);
-    AddTermTag(list, NULL, 0, 1);
-    AddTermBegin(&list, 44);
+    AddTermEnd(list, 10);
+    AddTermTag(list, NULL, 666, 2);
+    RemoveTermTag(&list, NULL, 666);
     RemoveTermBegin(&list);
-    RemoveTermEnd(&list);
-    RemoveTermTag(&list, NULL, 3);
     DisplayList(list);
     FreeList(&list);
     return 0;

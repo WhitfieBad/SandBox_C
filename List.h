@@ -17,28 +17,26 @@ typedef struct {
     struct Node* next;
 }Node;
 
-Node* CreateNode();
+int CreateNode();
 
-void FreeList(Node**);
+int FreeList(Node**);
 
-void DisplayList(Node*);
+int DisplayList(Node*);
 
-_Bool RemoveTermBegin(Node**);
+int RemoveTermEnd(Node**);
 
-_Bool RemoveTermEnd(Node**);
+int AddTermEnd(Node*, TYPE);
 
-_Bool RemoveTermTag(Node**, EqualsFunction, TYPE);
+int RemoveTermBegin(Node**);
 
-bool AddTermBegin(Node **, TYPE);
+int AddTermEnd(Node*, TYPE);
 
-Node* GetEndNode(Node*, Node**);
+int GetEndNode(Node*, Node**, Node**);
 
-_Bool AddTermEnd(Node*, TYPE);
+int AddTermBegin(Node **, TYPE);
 
-_Bool AddTermTag(Node*, EqualsFunction, TYPE, TYPE);
+int RemoveTermTag(Node**, EqualsFunction, TYPE);
 
-static _Bool DefaultEquals(TYPE o1, TYPE o2) {
-    return o1 == o2;
-}
+int AddTermTag(Node*, EqualsFunction, TYPE, TYPE);
 
 #endif //SANDBOX_C_LIST_H
