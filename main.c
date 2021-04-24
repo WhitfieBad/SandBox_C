@@ -14,4 +14,5 @@ int main() {
     RemoveTermTag(&list, NULL, 3);
     DisplayList(list);
     FreeList(&list);
+    return 0;
 }
