@@ -17,7 +17,7 @@ typedef struct {
     struct Node* next;
 }Node;
 
-int CreateNode();
+int CreateNode(Node**, void*, size_t);
 
 int FreeList(Node**);
 
@@ -25,18 +25,16 @@ int DisplayList(Node*, PrintFunction);
 
 int RemoveTermEnd(Node**);
 
-int AddTermEnd(Node*, void*);
-
 int RemoveTermBegin(Node**);
 
-int AddTermEnd(Node*, void*);
+int AddTermEnd(Node*, void*, size_t);
 
 int GetEndNode(Node*, Node**, Node**);
 
-int AddTermBegin(Node **, void*);
+int AddTermBegin(Node **, void*, size_t);
 
 int RemoveTermTag(Node**, EqualsFunction, void*);
 
-int AddTermTag(Node*, EqualsFunction, void*, void*);
+int AddTermTag(Node*, EqualsFunction, void*, void*, size_t);
 
 #endif //SANDBOX_C_LIST_H

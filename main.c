@@ -14,25 +14,20 @@ static _Bool EqualsFunctionInt(void* o1, void* o2) {
 }
 
 int main() {
-    int* p0 = (int*) malloc(sizeof(int));
-    *p0 = 1;
-    int* p1 = (int*) malloc(sizeof(int));
-    *p1 = 2;
-    int* p2 = (int*) malloc(sizeof(int));
-    *p2 = 3;
-    int* p3 = (int*) malloc(sizeof(int));
-    *p3 = 4;
-    int* p4 = (int*) malloc(sizeof(int));
-    *p4 = 6;
-;
+
+    int value1 = 1;
+    int value2 = 2;
+    int value3 = 3;
+    int value4 = 4;
+
     Node* list = NULL;
-    CreateNode(&list, p0);
-    AddTermBegin(&list, p1);
-    AddTermBegin(&list, p2);
-    AddTermBegin(&list, p3);
-    AddTermBegin(&list, p4);
-    int tag = 2;
-    RemoveTermEnd(&list);
+    CreateNode(&list, &value1, sizeof(int));
+    AddTermBegin(&list, &value2, sizeof(int));
+    AddTermBegin(&list, &value3, sizeof(int));
+    AddTermBegin(&list, &value4, sizeof(int));
+    AddTermBegin(&list, &value4, sizeof(int));
+
+    AddTermTag(list, EqualsFunctionInt, &value3, &value4, sizeof(int));
     DisplayList(list, PrintInt);
     FreeList(&list);
     return 0;

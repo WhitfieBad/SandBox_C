@@ -1,8 +1,7 @@
 //
 // Created by whitfie on 4/23/21.
 //
-
-#include <string.h>
+#include <memory.h>
 #include "List.h"
 
 static _Bool DefaultEquals(void* o1, void* o2) {
@@ -13,10 +12,13 @@ static void DefaulPrint(void* pObject){
     printf("%p \n", pObject);
 }
 
-int CreateNode(Node** newNode, void* pElement) {
-    *newNode = (Node*) malloc(sizeof(Node));
-    if (*newNode) {
-        (*newNode)->pData = pElement;
+int CreateNode(Node** pNewNode, void* pElement, size_t sizeElement) {
+    *pNewNode = (Node*) malloc(sizeof(Node));
+    void* pNewElement = malloc(sizeElement);
+
+    if (*pNewNode && pNewElement) {
+        memcpy(pNewElement, pElement, sizeElement);
+        (*pNewNode)->pData = pNewElement;
         return 0;
     }
     return -1;
@@ -117,13 +119,13 @@ int RemoveTermEnd(Node** pBeginNode) {
     return 1;
 }
 
-int AddTermBegin(Node** pBeginNode, void* pData) {
+int AddTermBegin(Node** pBeginNode, void* pElement, size_t sizeElemet) {
     if (!pBeginNode) {
         return -1;
     }
 
     Node* newNode = NULL;
-    if (CreateNode(&newNode, pData) < 0) {
+    if (CreateNode(&newNode, pElement, sizeElemet) < 0) {
         return -1;
     }
 
@@ -148,7 +150,7 @@ int GetEndNode(Node* pBeginNode, Node** pPreNode, Node** pEndNode) {
     return 0;
 }
 
-int AddTermEnd(Node* beginNode, void* pElement) {
+int AddTermEnd(Node* beginNode, void* pElement, size_t sizeElement) {
     Node* preNode = NULL;
     Node* newEndNode = NULL;
 
@@ -156,7 +158,7 @@ int AddTermEnd(Node* beginNode, void* pElement) {
         return -1;
     }
 
-    if (CreateNode(&newEndNode, pElement) < 0) {
+    if (CreateNode(&newEndNode, pElement, sizeElement) < 0) {
         return -1;
     }
 
@@ -164,7 +166,7 @@ int AddTermEnd(Node* beginNode, void* pElement) {
     return 0;
 }
 
-int AddTermTag(Node* pBeginNode, EqualsFunction equalsFunction, void* pElement, void* pTag) {
+int AddTermTag(Node* pBeginNode, EqualsFunction equalsFunction,void* pTag, void* pElement, size_t sizeElemet) {
     if (!pBeginNode) {
         return -1;
     }
@@ -179,7 +181,7 @@ int AddTermTag(Node* pBeginNode, EqualsFunction equalsFunction, void* pElement, 
         if (equalsFunction(pBeginNode->pData, pTag)) {
             Node* newNode = NULL;
             Node* nextNode = (Node *) pBeginNode->next;
-            if (CreateNode(&newNode, pElement) < 0) {
+            if (CreateNode(&newNode, pElement, sizeElemet) < 0) {
                 return -1;
             }
             newNode->next = (struct Node *) nextNode;
