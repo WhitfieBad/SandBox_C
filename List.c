@@ -116,7 +116,7 @@ int RemoveTermEnd(Node** pBeginNode) {
     } else{
         *pBeginNode = NULL;
     }
-    return 1;
+    return 0;
 }
 
 int AddTermBegin(Node** pBeginNode, void* pElement, size_t sizeElemet) {
