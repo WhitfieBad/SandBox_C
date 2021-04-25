@@ -1,34 +1,53 @@
 #include <stdio.h>
 #include "List.h"
 
-static void PrintInt(void* pObject){
-    int* d = (int *) pObject;
-    printf("%d \n", *d);
+typedef struct {
+  char* countyName;
+  char* capital;
+  char* language;
+  unsigned int area;
+  char* currency;
+  char* headState;
+} Country;
+
+static void PrintCountry(const void* pObject){
+    Country * country = (Country *) pObject;
+    printf("%s \n", country->countyName);
 }
 
-static _Bool EqualsFunctionInt(void* o1, void* o2) {
-
-    int* a = (int *) o1;
-    int* b = (int *) o2;
-    return *a == *b;
+static bool EqualsFunctionCountry(const void* o1,const void* o2) {
+    Country * country1 = (Country *) o1;
+    Country * country2 = (Country *) o2;
+    return country1->countyName == country2->countyName;
 }
 
 int main() {
 
-    int value1 = 1;
-    int value2 = 2;
-    int value3 = 3;
-    int value4 = 4;
+    Country Ukranian = {"Ukranian"};
+    Country Usa = {"Usa"};
+    Country Jupane = {"Jupane"};
+    Country rushka = {"rushka"};
 
     Node* list = NULL;
-    CreateNode(&list, &value1, sizeof(int));
-    AddTermBegin(&list, &value2, sizeof(int));
-    AddTermBegin(&list, &value3, sizeof(int));
-    AddTermBegin(&list, &value4, sizeof(int));
-    AddTermBegin(&list, &value4, sizeof(int));
+    CreateNode(&list, &Ukranian, sizeof(Ukranian));
 
-    AddTermTag(list, EqualsFunctionInt, &value3, &value4, sizeof(int));
-    DisplayList(list, PrintInt);
+    AddTermBegin(&list, &Usa, sizeof(Usa));
+    AddTermEnd(list, &rushka, sizeof(rushka));
+
+    AddTermTag(list, EqualsFunctionCountry, &Usa, &Jupane, sizeof(Jupane));
+
+    DisplayList(list, PrintCountry);
+
+    printf("-------------------------------------------------------------------- \n");
+
+    RemoveTermBegin(&list);
+    RemoveTermEnd(&list);
+    RemoveTermTag(&list, EqualsFunctionCountry, &Jupane);
+
+    DisplayList(list, PrintCountry);
     FreeList(&list);
+
+    printf("Gloty to \n");
+    printf("Gloty to...Ukranian");
     return 0;
 }
