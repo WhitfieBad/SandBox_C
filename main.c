@@ -47,7 +47,7 @@ int main() {
     DisplayList(list, PrintCountry);
     FreeList(&list);
 
-    printf("Gloty to \n");
-    printf("Gloty to...Ukranian");
+    printf("Glory to \n");
+    printf("Glory to...Ukranian");
     return 0;
 }

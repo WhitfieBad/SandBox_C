@@ -54,15 +54,15 @@ int DisplayList(Node *pBeginNode, PrintFunction printFunction) {
     return 1;
 }
 
-int RemoveTermBegin(Node** pNode) {
-    if (!pNode || !(*pNode)) {
+int RemoveTermBegin(Node** pBeginNode) {
+    if (!pBeginNode || !(*pBeginNode)) {
         return 0;
     }
 
-    Node *nodeNext = (Node *) (*pNode)->next;
-    free((*pNode)->pData);
-    free(*pNode);
-    *pNode = nodeNext;
+    Node *nodeNext = (Node *) (*pBeginNode)->next;
+    free((*pBeginNode)->pData);
+    free(*pBeginNode);
+    *pBeginNode = nodeNext;
     return 1;
 }
 
