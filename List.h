@@ -9,11 +9,11 @@
 #include <malloc.h>
 #include <stdbool.h>
 
-typedef int TYPE;
-typedef _Bool (*EqualsFunction) (TYPE o1, TYPE o2);
+typedef _Bool (*EqualsFunction) (void* o1, void* o2);
+typedef void (*PrintFunction) (void* o1);
 
 typedef struct {
-    TYPE data;
+    void* pData;
     struct Node* next;
 }Node;
 
@@ -21,22 +21,22 @@ int CreateNode();
 
 int FreeList(Node**);
 
-int DisplayList(Node*);
+int DisplayList(Node*, PrintFunction);
 
 int RemoveTermEnd(Node**);
 
-int AddTermEnd(Node*, TYPE);
+int AddTermEnd(Node*, void*);
 
 int RemoveTermBegin(Node**);
 
-int AddTermEnd(Node*, TYPE);
+int AddTermEnd(Node*, void*);
 
 int GetEndNode(Node*, Node**, Node**);
 
-int AddTermBegin(Node **, TYPE);
+int AddTermBegin(Node **, void*);
 
-int RemoveTermTag(Node**, EqualsFunction, TYPE);
+int RemoveTermTag(Node**, EqualsFunction, void*);
 
-int AddTermTag(Node*, EqualsFunction, TYPE, TYPE);
+int AddTermTag(Node*, EqualsFunction, void*, void*);
 
 #endif //SANDBOX_C_LIST_H

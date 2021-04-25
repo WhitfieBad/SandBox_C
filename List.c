@@ -2,43 +2,52 @@
 // Created by whitfie on 4/23/21.
 //
 
+#include <string.h>
 #include "List.h"
 
-static _Bool DefaultEquals(TYPE o1, TYPE o2) {
+static _Bool DefaultEquals(void* o1, void* o2) {
     return o1 == o2;
 }
 
-int CreateNode(TYPE element, Node** pNode) {
-    Node* newNode = (Node*) malloc(sizeof(Node));
-    if (newNode) {
-        newNode->data = element;
-        *pNode = newNode;
+static void DefaulPrint(void* pObject){
+    printf("%p \n", pObject);
+}
+
+int CreateNode(Node** newNode, void* pElement) {
+    *newNode = (Node*) malloc(sizeof(Node));
+    if (*newNode) {
+        (*newNode)->pData = pElement;
         return 0;
     }
     return -1;
 }
 
-int FreeList(Node** pNode) {
-    if (!pNode) {
+int FreeList(Node** pBeginNode) {
+    if (!pBeginNode) {
        return -1;
     }
 
-    while (*pNode) {
-        Node* deleteNode = *pNode;
-        *pNode = (Node *) (*pNode)->next;
-        free(deleteNode);
+    while (*pBeginNode) {
+        Node* pNodeDeleted = *pBeginNode;
+        *pBeginNode = (Node *) (*pBeginNode)->next;
+        free(pNodeDeleted->pData);
+        free(pNodeDeleted);
     }
     return 0;
 }
 
-int DisplayList(Node *pNode) {
-    if (!pNode) {
+int DisplayList(Node *pBeginNode, PrintFunction printFunction) {
+    if (!pBeginNode) {
         return -1;
     }
 
-    while (pNode) {
-        printf("%d \n", pNode->data);
-        pNode = (Node *) pNode->next;
+    if (!printFunction) {
+        printFunction = DefaulPrint;
+    }
+
+    while (pBeginNode) {
+        printFunction(pBeginNode->pData);
+        pBeginNode = (Node *) pBeginNode->next;
     }
     return 0;
 }
@@ -49,13 +58,14 @@ int RemoveTermBegin(Node** pNode) {
     }
 
     Node *nodeNext = (Node *) (*pNode)->next;
+    free((*pNode)->pData);
     free(*pNode);
     *pNode = nodeNext;
     return 0;
 }
 
-int RemoveTermTag(Node** pNode, EqualsFunction equalsFunction, TYPE tag) {
-    if (!pNode) {
+int RemoveTermTag(Node** pBeginNode, EqualsFunction equalsFunction, void* tag) {
+    if (!pBeginNode) {
         return -1;
     }
 
@@ -64,81 +74,81 @@ int RemoveTermTag(Node** pNode, EqualsFunction equalsFunction, TYPE tag) {
     }
 
     Node* preNode = NULL;
-    Node* nextNode = *pNode;
+    Node* nextNode = *pBeginNode;
 
     int isCompleted = -1;
 
     while (nextNode) {
-        if (equalsFunction(nextNode->data, tag)) {
-            isCompleted = 0;
+        if (equalsFunction(nextNode->pData, tag)) {
             if (preNode) {
                 preNode->next = nextNode->next;
-                free(nextNode);
-                nextNode = preNode;
             } else {
-                if (RemoveTermBegin(pNode) < 0) {
-                   return -1;
-                }
-                continue;
+                *pBeginNode = (Node *) nextNode->next;
             }
+            Node* deleteNode = nextNode;
+            nextNode = (Node *) nextNode->next;
+            free(deleteNode->pData);
+            free(deleteNode);
+            isCompleted = 0;
         } else {
-            preNode = (Node *) nextNode;
+            preNode = nextNode;
+            nextNode = (Node *) nextNode->next;
         }
-        nextNode = (Node *) nextNode->next;
     }
     return isCompleted;
 }
 
-int RemoveTermEnd(Node** pNode) {
+int RemoveTermEnd(Node** pBeginNode) {
     Node* preNode = NULL;
     Node* endNode = NULL;
 
-    if(GetEndNode(*pNode, &preNode, &endNode) < 0){
+    if(GetEndNode(*pBeginNode, &preNode, &endNode) < 0){
         return -1;
     }
 
+    free(endNode->pData);
     free(endNode);
 
     if (preNode) {
         preNode->next = NULL;
     } else{
-        *pNode = NULL;
+        *pBeginNode = NULL;
     }
     return 1;
 }
 
-int AddTermBegin(Node** pNode, TYPE data) {
-    if (!pNode) {
+int AddTermBegin(Node** pBeginNode, void* pData) {
+    if (!pBeginNode) {
         return -1;
     }
 
     Node* newNode = NULL;
-    if (CreateNode(data, &newNode) < 0) {
+    if (CreateNode(&newNode, pData) < 0) {
         return -1;
     }
 
-    newNode->next = (struct Node *) *pNode;
-    *pNode = newNode;
+    newNode->next = (struct Node *) *pBeginNode;
+    *pBeginNode = newNode;
     return 0;
 }
 
-int GetEndNode(Node* beginNode, Node** preNode, Node** endNode) {
-    if(!beginNode) {
+int GetEndNode(Node* pBeginNode, Node** pPreNode, Node** pEndNode) {
+    if(!pBeginNode) {
         return -1;
     }
 
-    while (beginNode->next) {
-        if (preNode) {
-            *preNode = beginNode;
+    while (pBeginNode->next) {
+        if (pPreNode) {
+            *pPreNode = pBeginNode;
         }
-        beginNode = (Node *) beginNode->next;
+        pBeginNode = (Node *) pBeginNode->next;
     }
 
-    *endNode = beginNode;
+    *pEndNode = pBeginNode;
     return 0;
 }
 
-int AddTermEnd(Node* beginNode, TYPE element) {
+int AddTermEnd(Node* beginNode, void* pElement) {
     Node* preNode = NULL;
     Node* newEndNode = NULL;
 
@@ -146,7 +156,7 @@ int AddTermEnd(Node* beginNode, TYPE element) {
         return -1;
     }
 
-    if (CreateNode(element, &newEndNode) < 0) {
+    if (CreateNode(&newEndNode, pElement) < 0) {
         return -1;
     }
 
@@ -154,8 +164,8 @@ int AddTermEnd(Node* beginNode, TYPE element) {
     return 0;
 }
 
-int AddTermTag(Node* beginNode, EqualsFunction equalsFunction, TYPE element, TYPE tag) {
-    if (!beginNode) {
+int AddTermTag(Node* pBeginNode, EqualsFunction equalsFunction, void* pElement, void* pTag) {
+    if (!pBeginNode) {
         return -1;
     }
 
@@ -165,19 +175,19 @@ int AddTermTag(Node* beginNode, EqualsFunction equalsFunction, TYPE element, TYP
 
     int isCompleted = -1;
 
-    while (beginNode) {
-        if (equalsFunction(beginNode->data, tag)) {
+    while (pBeginNode) {
+        if (equalsFunction(pBeginNode->pData, pTag)) {
             Node* newNode = NULL;
-            Node* nextNode = (Node *) beginNode->next;
-            if (CreateNode(element, &newNode) < 0) {
+            Node* nextNode = (Node *) pBeginNode->next;
+            if (CreateNode(&newNode, pElement) < 0) {
                 return -1;
             }
             newNode->next = (struct Node *) nextNode;
-            beginNode->next = (struct Node *) newNode;
-            beginNode = (Node *) beginNode->next;
-            isCompleted = 1;
+            pBeginNode->next = (struct Node *) newNode;
+            pBeginNode = (Node *) pBeginNode->next;
+            isCompleted = 0;
         }
-        beginNode = (Node *) beginNode->next;
+        pBeginNode = (Node *) pBeginNode->next;
     }
     return isCompleted;
 }
