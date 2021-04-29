@@ -1,53 +1,51 @@
 #include <stdio.h>
 #include "List.h"
 
-typedef struct {
-  char* countyName;
-  char* capital;
-  char* language;
-  unsigned int area;
-  char* currency;
-  char* headState;
-} Country;
+void printInt(const void* const value) {
 
-static void PrintCountry(const void* pObject){
-    Country * country = (Country *) pObject;
-    printf("%s \n", country->countyName);
+    const int valueInt = *(int*) value;
+    printf("%d \n", valueInt);
 }
 
-static bool EqualsFunctionCountry(const void* o1,const void* o2) {
-    Country * country1 = (Country *) o1;
-    Country * country2 = (Country *) o2;
-    return country1->countyName == country2->countyName;
+Node* addTwoNumbers(Node* l1, Node* l2){
+    Node* SumList = NULL;
+
+    while (l1 && l2) {
+        int* a = (int*) l1->pData;
+        int* b = (int*) l2->pData;
+
+        int sum = *a + *b;
+
+        AddTermBegin(&SumList, &sum, sizeof (int));
+
+        l1 = (Node *) l1->next;
+        l2 = (Node *) l2->next;
+    }
+    return SumList;
 }
 
 int main() {
+    Node* listA = NULL;
+    int value = 2;
+    CreateNode(&listA, &value, sizeof(value));
+    value = 4;
+    AddTermBegin(&listA, &value, sizeof(value));
+    value = 3;
+    AddTermBegin(&listA, &value, sizeof(value));
 
-    Country Ukranian = {"Ukranian"};
-    Country Usa = {"Usa"};
-    Country Jupane = {"Jupane"};
-    Country rushka = {"rushka"};
+    Node* listB = NULL;
+    value = 5;
+    AddTermBegin(&listB, &value, sizeof(value));
+    value = 6;
+    AddTermBegin(&listB, &value, sizeof(value));
+    value = 4;
+    AddTermBegin(&listB, &value, sizeof(value));
 
-    Node* list = NULL;
-    CreateNode(&list, &Ukranian, sizeof(Ukranian));
+    Node* sumNode = addTwoNumbers(listA, listB);
+    DisplayList(sumNode, printInt);
 
-    AddTermBegin(&list, &Usa, sizeof(Usa));
-    AddTermEnd(list, &rushka, sizeof(rushka));
-
-    AddTermTag(list, EqualsFunctionCountry, &Usa, &Jupane, sizeof(Jupane));
-
-    DisplayList(list, PrintCountry);
-
-    printf("-------------------------------------------------------------------- \n");
-
-    RemoveTermBegin(&list);
-    RemoveTermEnd(&list);
-    RemoveTermTag(&list, EqualsFunctionCountry, &Jupane);
-
-    DisplayList(list, PrintCountry);
-    FreeList(&list);
-
-    printf("Glory to \n");
-    printf("Glory to...Ukranian");
+    FreeList(&listB);
+    FreeList(&listA);
+    FreeList(&sumNode);
     return 0;
 }

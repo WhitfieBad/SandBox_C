@@ -26,7 +26,7 @@ int AddTermBegin(Node** pBeginNode, void* pElement, size_t sizeElemet);
 
 int AddTermEnd(Node* beginNode, void* pElement, size_t sizeElement);
 
-int AddTermTag(Node* pBeginNode, EqualsFunction equalsFunction,void* pTag, void* pElement, size_t sizeElemet);
+int AddTermTag(Node* pBeginNode, EqualsFunction equalsFunction, void* pTag, void* pElement, size_t sizeElemet);
 
 int RemoveTermBegin(Node** pBeginNode);
 
